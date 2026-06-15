@@ -20,7 +20,7 @@ export type Exercise = {
 // Type ExerciseState, represents the state of the exercise, it's ID, when it was last done, and times done.
 export type ExerciseState = {
     exerciseId: string;
-    lastDoneAt: Date | null;
+    lastDoneAt: string | null;
     timesDone: number;
 };
 
