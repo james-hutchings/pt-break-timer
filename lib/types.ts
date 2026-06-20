@@ -24,8 +24,23 @@ export type ExerciseState = {
     timesDone: number;
 };
 
-// Type TimerSettings, represents the settings for the timer, including how long the break is, and how many exercises per break.
-export type TimerSettings = {
+// Type TimerPreset, represents a PRESET for the timer, including its ID, label, interval in minutes, and how many exercises per break.
+export type TimerPreset = {
+    id: string;
+    label: string;
     intervalMinutes: number;
     exercisesPerBreak: number;
 };
+
+// Type TimerSettings, represents the CURRENT settings for the timer, including the interval in minutes, how many exercises per break, and an array of presets.
+export type TimerSettings = {
+    intervalMinutes: number;
+    exercisesPerBreak: number;
+    presets: TimerPreset[];
+};
+
+// Type TimerState, represents the STATE of the timer. Just holds the end time of the current break. 
+export type TimerState = {
+    endAt: string | null;
+};
+
