@@ -33,7 +33,7 @@ describe("getRemainingSeconds", () => {
   });
 
   // Test for getRemainingSeconds function, checks if it returns 0 when the timer has expired.
-  it("getRemaningSeconds returns 0 when the timer has expired", () => {
+  it("getRemainingSeconds returns 0 when the timer has expired", () => {
 
     const now = new Date("2026-06-16T21:42:50.762Z");
     const endAt = "2026-06-16T21:42:40.762Z";
