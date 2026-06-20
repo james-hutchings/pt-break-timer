@@ -13,6 +13,9 @@ export type Exercise = {
     bodyPart: string;
     instructions: string;
     durationSeconds: number;
+    sets?: number | null;
+    reps?: number | null;
+    videoUrl?: string | null;
     active: boolean;
 };
 
