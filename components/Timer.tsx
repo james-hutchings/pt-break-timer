@@ -11,6 +11,7 @@ type TimerProps = {
     defaultIntervalMinutes?: number;
 };
 
+
 // Helper function to format remaining seconds into a MM:SS string format.
 function formatTime(totalSeconds: number): string {
     const minutes = Math.floor(totalSeconds / 60);
@@ -29,6 +30,8 @@ export function Timer({ defaultIntervalMinutes = 30 }: TimerProps) {
         start,
         reset,
     } = useTimer(defaultIntervalMinutes);
+
+    const mockExercises = ["Neck Stretch", "Wall Slide", "Chin Tuck"];
 
     // Render the timer UI, showing the remaining time, whether the timer is running or complete, and buttons to start and reset the timer.
     return (
@@ -58,6 +61,26 @@ export function Timer({ defaultIntervalMinutes = 30 }: TimerProps) {
                     Reset
                 </button>
             </div>
+            
+            {isComplete && (
+                <div className="mt-6">
+                    <h3 className="text-xl font-semibold">
+                        Choose exercises
+                    </h3>
+
+                    <ul className="mt-3 space-y-2">
+                        {mockExercises.map((exercise) => (
+                            <li
+                                key={exercise}
+                                className="rounded-lg border px-3 py-2"
+                            >
+                                {exercise}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+
         </div>
     );
 }
