@@ -1,0 +1,60 @@
+/*
+ * Component that displays a list of exercises.
+ * Written by James Hutchings and ChatGPT. 6/22/2026
+ */
+
+import type { Exercise } from "@/lib/types";
+
+type ExerciseQueueProps = {
+    exercises: Exercise[];
+    selectedExerciseId?: string | null;
+    onSelect: (exercise: Exercise) => void;
+};
+
+export function ExerciseQueue({
+    exercises,
+    selectedExerciseId = null,
+    onSelect,
+}: ExerciseQueueProps) {
+    return (
+        <div className="mt-6">
+            <h3 className="text-xl font-semibold">Choose exercises</h3>
+
+            <div className="mt-3 space-y-2">
+                {exercises.map((exercise) => {
+                    const isSelected = exercise.id === selectedExerciseId;
+
+                    return (
+                        <div
+                            key={exercise.id}
+                            className={`rounded-lg border px-3 py-3 ${
+                                isSelected ? "border-black" : ""
+                            }`}
+                        >
+                            <div className="font-medium">{exercise.name}</div>
+
+                            <div className="text-sm text-gray-600">
+                                {exercise.type} · {exercise.area} · {exercise.bodyPart}
+                            </div>
+
+                            <div className="mt-2 text-sm">
+                                {exercise.instructions}
+                            </div>
+
+                            <div className="mt-2 text-xs text-gray-500">
+                                {exercise.durationSeconds} seconds
+                            </div>
+
+                            <button
+                                className="mt-3 rounded-lg border px-3 py-2 text-sm"
+                                onClick={() => onSelect(exercise)}
+                            >
+                                Select
+                            </button>
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    );
+}

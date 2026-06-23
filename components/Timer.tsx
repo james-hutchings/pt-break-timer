@@ -5,7 +5,14 @@
 
 "use client";
 
+import {useState} from "react"; 
+import exercises from "@/data/exercises.json";
+import { ExerciseQueue } from "@/components/ExerciseQueue";
 import { useTimer } from "@/hooks/useTimer";
+import { getExerciseOptions } from "@/lib/queue";
+import type { Exercise } from "@/lib/types";
+import exercisesData from "@/data/exercises.json";
+
 
 type TimerProps = {
     defaultIntervalMinutes?: number;
@@ -31,7 +38,13 @@ export function Timer({ defaultIntervalMinutes = 30 }: TimerProps) {
         reset,
     } = useTimer(defaultIntervalMinutes);
 
-    const mockExercises = ["Neck Stretch", "Wall Slide", "Chin Tuck"];
+    const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
+
+    const exerciseOptions = getExerciseOptions(exercises as Exercise[], [], 2);
+
+    function handleSelectExercise(exercise: Exercise) {
+        setSelectedExercise(exercise);
+    }
 
     // Render the timer UI, showing the remaining time, whether the timer is running or complete, and buttons to start and reset the timer.
     return (
@@ -58,29 +71,33 @@ export function Timer({ defaultIntervalMinutes = 30 }: TimerProps) {
                     className="rounded-lg border px-4 py-2"
                     onClick={reset}
                 >
-                    Reset
+                    Take break early!
                 </button>
             </div>
             
             {isComplete && (
-                <div className="mt-6">
-                    <h3 className="text-xl font-semibold">
-                        Choose exercises
-                    </h3>
+                <>
+                    {selectedExercise && (
+                        <div className="mt-6 rounded-lg border bg-zinc-50 p-4">
+                            <h3 className="text-lg font-semibold">
+                                Current exercise
+                            </h3>
+                            <p className="mt-2 font-medium">
+                                {selectedExercise.name}
+                            </p>
+                            <p className="mt-1 text-sm text-gray-600">
+                                {selectedExercise.instructions}
+                            </p>
+                        </div>
+                    )}
 
-                    <ul className="mt-3 space-y-2">
-                        {mockExercises.map((exercise) => (
-                            <li
-                                key={exercise}
-                                className="rounded-lg border px-3 py-2"
-                            >
-                                {exercise}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
+                    <ExerciseQueue
+                        exercises={exerciseOptions}
+                        selectedExerciseId={selectedExercise?.id ?? null}
+                        onSelect={handleSelectExercise}
+                    />
+                </>
             )}
-
         </div>
     );
 }
