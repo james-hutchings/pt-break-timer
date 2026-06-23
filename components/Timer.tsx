@@ -1,23 +1,27 @@
-
-/*  This file contains a React component called Timer, which displays a countdown timer and provides controls to start and reset the timer.
-* Written by James Hutchings and ChatGPT, 2024-06-19
+/*
+  * This file contains a React component called Timer, which displays a countdown timer and provides controls to start and reset the timer.
+  * Written by James Hutchings and ChatGPT, 2024-06-19
 */
 
 "use client";
 
-import {useState} from "react"; 
-import exercises from "@/data/exercises.json";
+import { useState } from "react";
+import exercisesData from "@/data/exercises.json";
 import { ExerciseQueue } from "@/components/ExerciseQueue";
+import { ExerciseRunner } from "@/components/ExerciseRunner";
 import { useTimer } from "@/hooks/useTimer";
 import { getExerciseOptions } from "@/lib/queue";
-import type { Exercise } from "@/lib/types";
-import exercisesData from "@/data/exercises.json";
-
+import {
+    advanceExerciseSession,
+    getCurrentExerciseId,
+    isExerciseSessionComplete,
+    startExerciseSession,
+} from "@/lib/exerciseSession";
+import type { Exercise, ExerciseSession } from "@/lib/types";
 
 type TimerProps = {
     defaultIntervalMinutes?: number;
 };
-
 
 // Helper function to format remaining seconds into a MM:SS string format.
 function formatTime(totalSeconds: number): string {
@@ -27,32 +31,112 @@ function formatTime(totalSeconds: number): string {
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 }
 
-// Timer component is a React component that displays a countdown timer and provides controls to start and reset the timer. 
+// Timer component is a React component that displays a countdown timer and provides controls to start and reset the timer.
 // It uses the useTimer hook to manage the timer's state and behavior.
 export function Timer({ defaultIntervalMinutes = 30 }: TimerProps) {
     const {
+        timerState,
         remainingSeconds,
         isRunning,
         isComplete,
         start,
         reset,
+        forceComplete,
     } = useTimer(defaultIntervalMinutes);
 
-    const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
+    const [selectedExerciseIds, setSelectedExerciseIds] = useState<string[]>([]);
+    const [session, setSession] = useState<ExerciseSession | null>(null);
 
-    const exerciseOptions = getExerciseOptions(exercises as Exercise[], [], 2);
+    const exerciseOptions = getExerciseOptions(
+        exercisesData as Exercise[],
+        [],
+        2
+    );
 
-    function handleSelectExercise(exercise: Exercise) {
-        setSelectedExercise(exercise);
+    const currentExerciseId = session ? getCurrentExerciseId(session) : null;
+    const currentExercise = currentExerciseId
+        ? exerciseOptions.find((exercise) => exercise.id === currentExerciseId) ?? null
+        : null;
+
+    const uiPhase =
+        session
+            ? "session"
+            : timerState.endAt === null
+                ? "ready"
+                : isComplete
+                    ? "selection"
+                    : "timer";
+
+    // function for starting break.
+    function handleStartBreak() {
+        setSelectedExerciseIds([]);
+        setSession(null);
+        start(defaultIntervalMinutes);
     }
 
-    // Render the timer UI, showing the remaining time, whether the timer is running or complete, and buttons to start and reset the timer.
+    // Function for resetting.
+    function handleReset() {
+        setSelectedExerciseIds([]);
+        setSession(null);
+        reset();
+    }
+
+    // Function for forcing break time now.
+    function handleSkipToBreakTime() {
+        setSelectedExerciseIds([]);
+        setSession(null);
+        forceComplete();
+    }
+
+    // Function handling toggling of exercise.
+    function handleToggleExercise(exerciseId: string) {
+        setSelectedExerciseIds((current) =>
+            current.includes(exerciseId)
+                ? current.filter((id) => id !== exerciseId)
+                : [...current, exerciseId]
+        );
+    }
+
+    function handleStartSelected() {
+        if (selectedExerciseIds.length === 0) {
+            return;
+        }
+
+        setSession(startExerciseSession(selectedExerciseIds));
+    }
+
+    function handleAdvanceSession() {
+        if (!session) {
+            return;
+        }
+
+        const nextSession = advanceExerciseSession(session);
+
+        if (isExerciseSessionComplete(nextSession)) {
+            setSession(null);
+            setSelectedExerciseIds([]);
+            reset();
+            return;
+        }
+
+        setSession(nextSession);
+    }
+
+    const displayText =
+        uiPhase === "ready"
+            ? "Ready to start"
+            : uiPhase === "selection"
+                ? "Break Time!"
+                : uiPhase === "session"
+                    ? "Exercise Time!"
+                    : formatTime(remainingSeconds);
+
     return (
         <div className="rounded-2xl border p-6 shadow-sm">
             <h2 className="text-2xl font-semibold">PT Break Timer</h2>
 
             <div className="mt-4 text-5xl font-bold">
-                {isComplete ? "Break Time!" : formatTime(remainingSeconds)}
+                {displayText}
             </div>
 
             <p className="mt-2 text-sm text-gray-600">
@@ -62,41 +146,42 @@ export function Timer({ defaultIntervalMinutes = 30 }: TimerProps) {
             <div className="mt-6 flex gap-3">
                 <button
                     className="rounded-lg border px-4 py-2"
-                    onClick={() => start(defaultIntervalMinutes)}
+                    onClick={handleStartBreak}
                 >
                     Start
                 </button>
 
                 <button
                     className="rounded-lg border px-4 py-2"
-                    onClick={reset}
+                    onClick={handleReset}
                 >
-                    Take break early!
+                    Reset
                 </button>
-            </div>
-            
-            {isComplete && (
-                <>
-                    {selectedExercise && (
-                        <div className="mt-6 rounded-lg border bg-zinc-50 p-4">
-                            <h3 className="text-lg font-semibold">
-                                Current exercise
-                            </h3>
-                            <p className="mt-2 font-medium">
-                                {selectedExercise.name}
-                            </p>
-                            <p className="mt-1 text-sm text-gray-600">
-                                {selectedExercise.instructions}
-                            </p>
-                        </div>
-                    )}
+                <button
+                    className="rounded-lg border px-4 py-2"
+                    onClick={handleSkipToBreakTime}
+                >
+                    Begin Break Now
+                </button>
 
-                    <ExerciseQueue
-                        exercises={exerciseOptions}
-                        selectedExerciseId={selectedExercise?.id ?? null}
-                        onSelect={handleSelectExercise}
-                    />
-                </>
+            </div>
+
+            {uiPhase === "selection" && (
+                <ExerciseQueue
+                    exercises={exerciseOptions}
+                    selectedExerciseIds={selectedExerciseIds}
+                    onToggleSelect={handleToggleExercise}
+                    onStartSelected={handleStartSelected}
+                />
+            )}
+
+            {uiPhase === "session" && currentExercise && session && (
+                <ExerciseRunner
+                    exercise={currentExercise}
+                    currentStep={session.currentIndex + 1}
+                    totalSteps={session.selectedExerciseIds.length}
+                    onAdvance={handleAdvanceSession}
+                />
             )}
         </div>
     );

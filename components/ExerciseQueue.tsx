@@ -7,14 +7,16 @@ import type { Exercise } from "@/lib/types";
 
 type ExerciseQueueProps = {
     exercises: Exercise[];
-    selectedExerciseId?: string | null;
-    onSelect: (exercise: Exercise) => void;
+    selectedExerciseIds: string[];
+    onToggleSelect: (exerciseId: string) => void;
+    onStartSelected: () => void;
 };
 
 export function ExerciseQueue({
     exercises,
-    selectedExerciseId = null,
-    onSelect,
+    selectedExerciseIds,
+    onToggleSelect,
+    onStartSelected,
 }: ExerciseQueueProps) {
     return (
         <div className="mt-6">
@@ -22,7 +24,7 @@ export function ExerciseQueue({
 
             <div className="mt-3 space-y-2">
                 {exercises.map((exercise) => {
-                    const isSelected = exercise.id === selectedExerciseId;
+                    const isSelected = selectedExerciseIds.includes(exercise.id);
 
                     return (
                         <div
@@ -47,14 +49,21 @@ export function ExerciseQueue({
 
                             <button
                                 className="mt-3 rounded-lg border px-3 py-2 text-sm"
-                                onClick={() => onSelect(exercise)}
+                                onClick={() => onToggleSelect(exercise.id)}
                             >
-                                Select
+                                {isSelected ? "Unselect" : "Select"}
                             </button>
                         </div>
                     );
                 })}
             </div>
+            <button
+                className="mt-4 rounded-lg border px-4 py-2 text-sm font-medium disabled:opacity-50"
+                onClick={onStartSelected}
+                disabled={selectedExerciseIds.length === 0}
+            >
+                Start Selected Exercises
+            </button>            
         </div>
     );
 }

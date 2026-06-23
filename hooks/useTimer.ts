@@ -77,6 +77,16 @@ export function useTimer(defaultIntervalMinutes = 30) {
         setIsRunning(true);
     }
 
+    // Forces completion of break.
+     function forceComplete() {
+        const currentNow = new Date();
+        setTimerState({
+            endAt: currentNow.toISOString(),
+        });
+        setNow(currentNow);
+        setIsRunning(false);
+    }   
+
     // Returned values.
     return {
         timerState,
@@ -86,5 +96,6 @@ export function useTimer(defaultIntervalMinutes = 30) {
         start,
         reset,
         snooze,
+        forceComplete,
     };
 }

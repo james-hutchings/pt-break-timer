@@ -47,3 +47,18 @@ export type TimerState = {
     endAt: string | null;
 };
 
+// Type AppMode, represents specific type that the app is currently in.
+export type AppMode = "timer" | "selection" | "session";
+
+// Type ExerciseSelectionState. Represents the the ExerciseSelectionstate.
+export type ExerciseSelectionState = {
+    selectedExerciseIds: string[];
+};
+
+// Type ExerciseSession, tells app how to run exercises one at a time. 
+export type ExerciseSession = {
+    selectedExerciseIds: string[];
+    currentIndex: number;
+    completedExerciseIds: string[];
+};
+
