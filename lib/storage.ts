@@ -57,6 +57,12 @@ function safeParse<T>(value: string | null): T | null {
 
 // Load timer settings from localStorage, or return default if not found or invalid.
 export function loadTimerSettings(): TimerSettings {
+    const storage = getStorage();
+
+    if (!storage) {
+        return defaultTimerSettings;
+    }
+
     const parsed = safeParse<TimerSettings>(localStorage.getItem(TIMER_SETTINGS_KEY));
     return parsed ?? defaultTimerSettings;
 }
@@ -87,6 +93,16 @@ export function loadExerciseStates(): ExerciseState[] {
 export function saveExerciseStates(states: ExerciseState[]): void {
     localStorage.setItem(EXERCISE_STATES_KEY, JSON.stringify(states));
 }
+
+// Returns the storage. 
+function getStorage(): Storage | null {
+    if (typeof window === "undefined") {
+        return null;
+    }
+
+    return window.localStorage;
+}
+
 
 // Clear all related localStorage items (for testing or reset purposes).
 export function clearAllStorage(): void {
