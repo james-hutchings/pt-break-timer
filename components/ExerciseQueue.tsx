@@ -12,6 +12,19 @@ type ExerciseQueueProps = {
     onStartSelected: () => void;
 };
 
+function getExerciseSummary(exercise: Exercise): string {
+    switch (exercise.mode) {
+        case "timer":
+            return `${exercise.durationSeconds ?? 0} seconds`;
+        case "reps":
+            return `${exercise.reps ?? 0} reps`;
+        case "hold":
+            return `${exercise.holdSeconds ?? 0} seconds hold`;
+        default:
+            return "Exercise";
+    }
+}
+
 export function ExerciseQueue({
     exercises,
     selectedExerciseIds,
@@ -44,7 +57,7 @@ export function ExerciseQueue({
                             </div>
 
                             <div className="mt-2 text-xs text-gray-500">
-                                {exercise.durationSeconds} seconds
+                                {getExerciseSummary(exercise)}
                             </div>
 
                             <button

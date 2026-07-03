@@ -4,6 +4,8 @@ This file contains the type definitions for the application.
 Written by James Hutchings, 2024-06-01
 */
 
+export type ExerciseMode = "timer" | "reps" | "hold";
+
 // Type exercise, represents an individual exercise that a user will complete during a PT break.
 export type Exercise = {
     id: string;
@@ -12,9 +14,10 @@ export type Exercise = {
     area: string;
     bodyPart: string;
     instructions: string;
-    durationSeconds: number;
-    sets?: number | null;
+    mode: ExerciseMode;
+    durationSeconds?: number | null;
     reps?: number | null;
+    holdSeconds?: number | null;
     videoUrl?: string | null;
     active: boolean;
 };
