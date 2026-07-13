@@ -2,9 +2,9 @@
 
 ## Purpose
 
-The PT Break Timer is a lightweight web application that reminds users to take periodic movement breaks throughout the day while ensuring that prescribed physical therapy exercises are completed evenly over time.
+The PT Break Timer is a lightweight web application that reminds users to take periodic movement breaks throughout the day while ensuring prescribed physical therapy exercises are completed evenly over time.
 
-The application is intended to be modular, testable, and extensible, allowing future additions such as exercise statistics, video demonstrations, configurable workout modes, and cloud synchronization.
+The application is designed to be modular, testable, and extensible, allowing future additions such as exercise statistics, video demonstrations, configurable workout modes, cloud synchronization, and user accounts.
 
 ---
 
@@ -26,7 +26,7 @@ The application is intended to be modular, testable, and extensible, allowing fu
 
 The application follows a layered architecture.
 
-```
+```text
 UI Components
         ↓
 React Hooks
@@ -38,108 +38,164 @@ Storage
 
 Each layer has a single responsibility.
 
-* Components display information.
-* Hooks manage React state.
-* Business logic contains application rules.
-* Storage persists user data.
+- Components display information.
+- Hooks manage React state and browser behavior.
+- Business logic contains application rules.
+- Storage persists user data.
 
-This separation makes future changes (such as replacing localStorage with a database) require minimal changes to the rest of the application.
+This separation allows implementation details (such as replacing `localStorage` with a database) to change without requiring major changes to the rest of the application.
 
 ---
 
 # Data Types
 
+## ExerciseMode
+
+Determines how an exercise should be performed.
+
+Current values:
+
+- `timer`
+- `reps`
+- `hold`
+
+---
+
 ## Exercise
 
 Represents a single exercise available to the user.
 
-Current fields:
+Fields:
 
-* id
-* name
-* type
-* area
-* bodyPart
-* instructions
-* durationSeconds
-* sets (optional)
-* reps (optional)
-* videoUrl (optional)
-* active
+- `id`
+- `name`
+- `type`
+- `area`
+- `bodyPart`
+- `instructions`
+- `mode`
+- `durationSeconds` *(optional)*
+- `reps` *(optional)*
+- `holdSeconds` *(optional)*
+- `videoUrl` *(optional)*
+- `active`
 
 ---
 
 ## ExerciseState
 
-Tracks user progress for an exercise.
+Tracks user history for an exercise.
 
 Fields:
 
-* exerciseId
-* lastDoneAt
-* timesDone
+- `exerciseId`
+- `lastDoneAt`
+- `timesDone`
 
 ---
 
 ## TimerPreset
 
-Represents a predefined timer configuration.
+Represents one preset timer configuration.
 
 Fields:
 
-* id
-* label
-* intervalMinutes
-* exercisesPerBreak
+- `id`
+- `label`
+- `intervalMinutes`
+- `exercisesPerBreak`
 
 ---
 
 ## TimerSettings
 
-Stores the user's current timer configuration.
+Stores the user's timer configuration.
 
 Fields:
 
-* intervalMinutes
-* exercisesPerBreak
-* presets
+- `intervalMinutes`
+- `exercisesPerBreak`
+- `presets`
 
 ---
 
 ## TimerState
 
-Stores the current timer state.
+Tracks the current timer.
 
 Fields:
 
-* endAt
+- `endAt`
 
 ---
 
 ## ExerciseSession
 
-Represents an active exercise session.
+Tracks the user's current exercise session.
 
 Fields:
 
-* selectedExerciseIds
-* currentIndex
-* completedExerciseIds
+- `selectedExerciseIds`
+- `currentIndex`
+- `completedExerciseIds`
+
+---
+
+# Exercise Model
+
+Exercises are stored as application content rather than user state.
+
+Spreadsheet mapping:
+
+| Spreadsheet | Exercise |
+|-------------|----------|
+| Exercise | `name` |
+| Type | `type` |
+| Area | `area` |
+| Body Part | `bodyPart` |
+| How | `instructions` |
+| Video Link | `videoUrl` |
+| Include | `active` |
+
+Exercise prescriptions are interpreted as:
+
+### Timer Exercise
+
+```text
+Mode: timer
+Uses durationSeconds
+```
+
+### Rep Exercise
+
+```text
+Mode: reps
+Uses reps
+```
+
+### Hold Exercise
+
+```text
+Mode: hold
+Uses holdSeconds
+```
+
+Unused spreadsheet fields are ignored for V1.
 
 ---
 
 # Queue Rules
 
-Queue generation is handled by `queue.ts`.
+Queue generation is handled entirely by `queue.ts`.
 
 Rules:
 
-* Ignore inactive exercises.
-* Exercises never completed have highest priority.
-* Remaining exercises are ordered by oldest completion date.
-* Display `2N` exercises.
-* User selects `N` exercises.
-* Selected exercises become an Exercise Session.
+- Ignore inactive exercises.
+- Prioritize exercises never completed.
+- Then prioritize oldest completed exercises.
+- Generate `2N` exercise options.
+- User selects `N`.
+- Selected exercises become an `ExerciseSession`.
 
 ---
 
@@ -149,50 +205,58 @@ Exercise execution is intentionally separated from exercise selection.
 
 Selection:
 
-```
+```text
 Queue
 ↓
-User chooses exercises
+User selects exercises
 ```
 
 Execution:
 
-```
+```text
 Selected exercises
 ↓
 Exercise Session
 ↓
-One exercise displayed at a time
+Display one exercise
 ↓
-Completion updates ExerciseState
+User completes exercise
+↓
+Update ExerciseState
+↓
+Next exercise
 ```
 
-This architecture allows future support for:
+This architecture supports future additions such as:
 
-* Sets
-* Repetitions
-* Hold timers
-* Exercise-specific workflows
-* Different completion modes
+- Hold timers
+- Repetition counters
+- Exercise-specific workflows
+- Different completion methods
 
-without changing queue logic.
+without modifying queue logic.
 
 ---
 
 # Timer Rules
 
-Timer logic lives in `timer.ts`.
+Timer logic is implemented in `timer.ts`.
 
 Rules:
 
-* Timer stores an end time.
-* Remaining time is calculated from the end time.
-* Timer can:
+- Timer stores an end time.
+- Remaining time is calculated from the current time.
+- Timer can:
+  - Start
+  - Reset
+  - Snooze
 
-  * Start
-  * Reset
-  * Snooze
-* React ticking behavior is handled by `useTimer.ts`.
+React timing behavior is handled by `useTimer.ts`.
+
+Timer presets determine:
+
+- Break duration
+- Number of exercises per break
 
 ---
 
@@ -202,23 +266,23 @@ Current implementation uses browser `localStorage`.
 
 Stored:
 
-* TimerSettings
-* TimerState
-* ExerciseState[]
+- `TimerSettings`
+- `TimerState`
+- `ExerciseState[]`
 
 Not stored:
 
-* Exercise definitions
-* Default timer presets
+- Exercise definitions
+- Default timer presets
 
 Storage is isolated inside `storage.ts`.
 
-This abstraction allows future replacement with:
+Future storage implementations could include:
 
-* IndexedDB
-* REST API
-* Database
-* Cloud synchronization
+- IndexedDB
+- REST API
+- SQL / NoSQL database
+- Cloud synchronization
 
 without affecting business logic.
 
@@ -241,44 +305,46 @@ tests/
 
 ## lib/
 
-* types.ts
-* queue.ts
-* timer.ts
-* storage.ts
-* exerciseSession.ts
+- `types.ts`
+- `queue.ts`
+- `timer.ts`
+- `storage.ts`
+- `exerciseSession.ts`
 
 ## hooks/
 
-* useTimer.ts
+- `useTimer.ts`
 
 ## components/
 
-* Timer.tsx
-* ExerciseQueue.tsx
-* ExerciseRunner.tsx
+- `Timer.tsx`
+- `ExerciseQueue.tsx`
+- `ExerciseRunner.tsx`
 
 ---
 
 # Testing
 
-Current coverage includes:
-
 ## Queue
 
-* Returns correct exercise count
-* Filters inactive exercises
-* Prioritizes never-completed exercises
-* Orders completed exercises by recency
-* Updates ExerciseState
-* Updates multiple ExerciseStates
+Current tests verify:
+
+- Correct exercise count
+- Active exercise filtering
+- Never-completed prioritization
+- Completion ordering
+- Single exercise updates
+- Multiple exercise updates
 
 ## Timer
 
-* Starts correctly
-* Calculates remaining time
-* Detects completion
-* Resets correctly
-* Snoozes correctly
+Current tests verify:
+
+- Timer starts correctly
+- Remaining time calculation
+- Completion detection
+- Reset
+- Snooze
 
 ---
 
@@ -286,22 +352,25 @@ Current coverage includes:
 
 ## Completed
 
-* Project initialized
-* GitHub integration
-* Queue architecture
-* Queue implementation
-* Queue tests
-* Timer architecture
-* Timer implementation
-* Timer tests
-* Storage layer
-* Exercise session architecture
-* React timer hook
-* Exercise selection flow
-* Exercise runner
-* Exercise completion persistence
-* Timer settings loaded from storage
-* Working browser UI
+- Project initialized
+- GitHub integration
+- Queue architecture
+- Queue implementation
+- Queue unit tests
+- Timer architecture
+- Timer implementation
+- Timer unit tests
+- Storage layer
+- Exercise session architecture
+- React timer hook
+- Exercise selection workflow
+- Exercise runner
+- Exercise completion persistence
+- Timer preset selection
+- Working browser UI
+- Spreadsheet converted into application JSON
+- Mode-based exercise model
+- Video demonstration button support
 
 ---
 
@@ -309,148 +378,45 @@ Current coverage includes:
 
 ## Functional
 
-* Convert exercise spreadsheet into `exercises.json`
-* Verify queue updates correctly over multiple sessions
-* Settings UI for timer presets
-* Remove temporary development controls
+- Verify queue behavior across multiple completed sessions
+- Final review of generated exercise JSON
+- Lock timer preset during active break
+- Remove development helpers
 
 ## UI / UX
 
-* Improve exercise cards
-* Improve selection experience
-* Better spacing and visual polish
-* Mobile responsiveness
+- Improve exercise cards
+- Improve exercise selection UX
+- Polish spacing and typography
+- Mobile responsiveness
+- Optional completion sound
 
 ## Deployment
 
-* Production build
-* Deploy 
-* Final testing
-* Remove development-only debugging
+- Production build
+- Deploy application
+- Final testing
+- Remove debugging utilities
 
 ---
 
 # Planned V2+
 
-* Exercise statistics page
-* Exercise history dashboard
-* Custom timer presets
-* Video playback
-* Sets / reps / hold workflows
-* Better exercise metadata
-* Cloud synchronization
-* User accounts
-* Multi-device support
+- Exercise statistics page
+- Exercise history dashboard
+- Custom timer presets
+- Embedded exercise videos
+- Better exercise metadata
+- Cloud synchronization
+- User accounts
+- Multi-device support
 
 ---
 
 # Development Notes
 
-Temporary debugging for exercise history can be added to `Timer.tsx` by rendering the current `ExerciseState[]` beneath the timer. This should be removed before production deployment.
+Temporary debugging can be added by rendering `ExerciseState[]` inside `Timer.tsx`.
 
+Remove all temporary debugging before production deployment.
 
-old Json:
-
-// [
-//   {
-//     "id": "a",
-//     "name": "a",
-//     "type": "a",
-//     "area": "a",
-//     "bodyPart": "a",
-//     "instructions": "a",
-//     "durationSeconds": 1,
-//     "active": true
-//   },
-//   {
-//     "id": "b",
-//     "name": "b",
-//     "type": "b",
-//     "area": "b",
-//     "bodyPart": "b",
-//     "instructions": "b",
-//     "durationSeconds": 2,
-//     "active": true
-//   },
-//   {
-//     "id": "c",
-//     "name": "c",
-//     "type": "c",
-//     "area": "c",
-//     "bodyPart": "c",
-//     "instructions": "c",
-//     "durationSeconds": 3,
-//     "active": true
-//   },
-//   {
-//     "id": "d",
-//     "name": "d",
-//     "type": "d",
-//     "area": "d",
-//     "bodyPart": "d",
-//     "instructions": "d",
-//     "durationSeconds": 4,
-//     "active": true
-//   },
-//   {
-//     "id": "e",
-//     "name": "e",
-//     "type": "e",
-//     "area": "e",
-//     "bodyPart": "e",
-//     "instructions": "e",
-//     "durationSeconds": 5,
-//     "active": true
-//   },
-//   {
-//     "id": "f",
-//     "name": "f",
-//     "type": "f",
-//     "area": "f",
-//     "bodyPart": "f",
-//     "instructions": "f",
-//     "durationSeconds": 6,
-//     "active": true
-//   },
-//   {
-//     "id": "g",
-//     "name": "g",
-//     "type": "g",
-//     "area": "g",
-//     "bodyPart": "g",
-//     "instructions": "g",
-//     "durationSeconds": 7,
-//     "active": true
-//   },
-//   {
-//     "id": "h",
-//     "name": "h",
-//     "type": "h",
-//     "area": "h",
-//     "bodyPart": "h",
-//     "instructions": "h",
-//     "durationSeconds": 8,
-//     "active": true
-//   },
-//   {
-//     "id": "i",
-//     "name": "i",
-//     "type": "i",
-//     "area": "i",
-//     "bodyPart": "i",
-//     "instructions": "i",
-//     "durationSeconds": 9,
-//     "active": true
-//   },
-//   {
-//     "id": "j",
-//     "name": "j",
-//     "type": "j",
-//     "area": "j",
-//     "bodyPart": "j",
-//     "instructions": "j",
-//     "durationSeconds": 10,
-//     "active": true
-//   }
-// ]
-
+Current deployment target is a static hosted web application using browser `localStorage` for persistence.
