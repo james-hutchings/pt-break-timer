@@ -22,7 +22,12 @@ import {
     isExerciseSessionComplete,
     startExerciseSession,
 } from "@/lib/exerciseSession";
-import type { Exercise, ExerciseSession, ExerciseState, TimerSettings } from "@/lib/types";
+import type {
+    Exercise,
+    ExerciseSession,
+    ExerciseState,
+    TimerSettings,
+} from "@/lib/types";
 
 type TimerProps = {
     defaultIntervalMinutes?: number;
@@ -39,8 +44,15 @@ function formatTime(totalSeconds: number): string {
 // Timer component is a React component that displays a countdown timer and provides controls to start and reset the timer.
 // It uses the useTimer hook to manage the timer's state and behavior.
 export function Timer(_: TimerProps) {
-
     const [timerSettings] = useState<TimerSettings>(loadTimerSettings);
+
+    const [selectedPreset, setSelectedPreset] = useState(
+        timerSettings.presets.find(
+            (preset) =>
+                preset.intervalMinutes === timerSettings.intervalMinutes &&
+                preset.exercisesPerBreak === timerSettings.exercisesPerBreak,
+        ) ?? timerSettings.presets[0],
+    );
 
     const {
         timerState,
@@ -50,7 +62,7 @@ export function Timer(_: TimerProps) {
         start,
         reset,
         forceComplete,
-    } = useTimer(timerSettings.intervalMinutes);
+    } = useTimer(selectedPreset.intervalMinutes);
 
     const [selectedExerciseIds, setSelectedExerciseIds] = useState<string[]>([]);
     const [session, setSession] = useState<ExerciseSession | null>(null);
@@ -66,7 +78,7 @@ export function Timer(_: TimerProps) {
     const exerciseOptions = getExerciseOptions(
         exercisesData as Exercise[],
         exerciseStates,
-        timerSettings.exercisesPerBreak,
+        selectedPreset.exercisesPerBreak,
     );
 
     const currentExerciseId = session ? getCurrentExerciseId(session) : null;
@@ -87,7 +99,7 @@ export function Timer(_: TimerProps) {
     function handleStartBreak() {
         setSelectedExerciseIds([]);
         setSession(null);
-        start(timerSettings.intervalMinutes);
+        start(selectedPreset.intervalMinutes);
     }
 
     // Function for resetting.
@@ -162,9 +174,31 @@ export function Timer(_: TimerProps) {
 
             <div className="mt-4 text-5xl font-bold">{displayText}</div>
 
-            <p className="mt-2 text-sm text-gray-600">
-                {isRunning ? "Timer running" : "Timer stopped"}
-            </p>
+            <div className="mt-4">
+                <label className="mb-2 block text-md font-medium text-green-700">
+                    Work Period
+                </label>
+
+                <select
+                    className="rounded-lg border bg-white px-3 py-2 text-sm text-black"
+                    value={selectedPreset.id}
+                    onChange={(e) => {
+                        const preset = timerSettings.presets.find(
+                            (p) => p.id === e.target.value,
+                        );
+
+                        if (preset) {
+                            setSelectedPreset(preset);
+                        }
+                    }}
+                >
+                    {timerSettings.presets.map((preset) => (
+                        <option key={preset.id} value={preset.id}>
+                            {preset.label}
+                        </option>
+                    ))}
+                </select>
+            </div>
 
             <div className="mt-6 flex gap-3">
                 <button
@@ -181,7 +215,7 @@ export function Timer(_: TimerProps) {
                     className="rounded-lg border px-4 py-2"
                     onClick={handleSkipToBreakTime}
                 >
-                    Begin Break Now
+                    End Timer and Start Break Now
                 </button>
             </div>
 

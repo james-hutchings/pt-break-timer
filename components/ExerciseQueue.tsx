@@ -46,17 +46,17 @@ export function ExerciseQueue({
                                 isSelected ? "border-black" : ""
                             }`}
                         >
-                            <div className="font-medium">{exercise.name}</div>
+                            <div className="text-2xl font-semibold">{exercise.name}</div>
 
-                            <div className="text-sm text-gray-600">
+                            <div className="text-md text-purple-700">
                                 {exercise.type} · {exercise.area} · {exercise.bodyPart}
                             </div>
 
-                            <div className="mt-2 text-sm">
+                            <div className="mt-2 text-xl">
                                 {exercise.instructions}
                             </div>
 
-                            <div className="mt-2 text-xs text-gray-500">
+                            <div className="mt-2 text-md text-orange-500">
                                 {getExerciseSummary(exercise)}
                             </div>
 

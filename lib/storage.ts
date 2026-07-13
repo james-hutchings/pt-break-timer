@@ -17,21 +17,28 @@ const defaultTimerSettings: TimerSettings = {
       presets: [
     {
       id: "quick",
-      label: "Quick Break",
+      label: "15 minutes",
       intervalMinutes: 15,
       exercisesPerBreak: 1,
     },
     {
       id: "standard",
-      label: "Standard Break",
+      label: "30 minutes",
       intervalMinutes: 30,
       exercisesPerBreak: 2,
     },
     {
       id: "long",
-      label: "Long Break",
+      label: "45 minutes",
       intervalMinutes: 45,
       exercisesPerBreak: 3,
+    },
+
+        {
+      id: "extended",
+      label: "60 minutes",
+      intervalMinutes: 60,
+      exercisesPerBreak: 4,
     },
   ],
 };
