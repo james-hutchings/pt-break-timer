@@ -42,7 +42,7 @@ export function ExerciseRunner({
 
             <h3 className="mt-2 text-4xl font-semibold">{exercise.name}</h3>
 
-            <div className="mt-2 text-md text-purple-700">
+            <div className="mt-2 text-md text-sky-500">
                 {exercise.type} · {exercise.area} · {exercise.bodyPart}
             </div>
 

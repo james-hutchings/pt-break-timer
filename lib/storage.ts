@@ -16,6 +16,12 @@ const defaultTimerSettings: TimerSettings = {
     exercisesPerBreak: 2,
       presets: [
     {
+      id: "test",
+      label: "1 minute",
+      intervalMinutes: 1,
+      exercisesPerBreak: 1,
+    },
+    {
       id: "quick",
       label: "15 minutes",
       intervalMinutes: 15,

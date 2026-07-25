@@ -48,7 +48,7 @@ export function ExerciseQueue({
                         >
                             <div className="text-2xl font-semibold">{exercise.name}</div>
 
-                            <div className="text-md text-purple-700">
+                            <div className="text-md text-sky-500">
                                 {exercise.type} · {exercise.area} · {exercise.bodyPart}
                             </div>
 

@@ -5,7 +5,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import exercisesData from "@/data/exercises.json";
 import { ExerciseQueue } from "@/components/ExerciseQueue";
 import { ExerciseRunner } from "@/components/ExerciseRunner";
@@ -45,6 +45,9 @@ function formatTime(totalSeconds: number): string {
 // It uses the useTimer hook to manage the timer's state and behavior.
 export function Timer(_: TimerProps) {
     const [timerSettings] = useState<TimerSettings>(loadTimerSettings);
+
+    const alarmIntervalRef = useRef<number | null>(null);
+    const audioContextRef = useRef<AudioContext | null>(null);
 
     const [selectedPreset, setSelectedPreset] = useState(
         timerSettings.presets.find(
@@ -97,6 +100,7 @@ export function Timer(_: TimerProps) {
 
     // function for starting break.
     function handleStartBreak() {
+        stopAlarm();
         setSelectedExerciseIds([]);
         setSession(null);
         start(selectedPreset.intervalMinutes);
@@ -104,6 +108,7 @@ export function Timer(_: TimerProps) {
 
     // Function for resetting.
     function handleReset() {
+        stopAlarm();
         setSelectedExerciseIds([]);
         setSession(null);
         reset();
@@ -111,6 +116,7 @@ export function Timer(_: TimerProps) {
 
     // Function for forcing break time now.
     function handleSkipToBreakTime() {
+        stopAlarm();
         setSelectedExerciseIds([]);
         setSession(null);
         forceComplete();
@@ -150,6 +156,7 @@ export function Timer(_: TimerProps) {
         const nextSession = advanceExerciseSession(session);
 
         if (isExerciseSessionComplete(nextSession)) {
+            stopAlarm();
             setSession(null);
             setSelectedExerciseIds([]);
             reset();
@@ -158,6 +165,80 @@ export function Timer(_: TimerProps) {
 
         setSession(nextSession);
     }
+
+    // Function for playing a beep sound.
+    function beep() {
+        if (typeof window === "undefined") {
+            return;
+        }
+
+        // Check for AudioContext support in the browser
+        const AudioContextClass =
+            window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+
+        if (!AudioContextClass) {
+            return;
+        }
+
+        // Create a new AudioContext if it doesn't exist
+        if (!audioContextRef.current) {
+            audioContextRef.current = new AudioContextClass();
+        }
+
+        const context = audioContextRef.current;
+
+        if (context.state === "suspended") {
+            void context.resume();
+        }
+
+        const oscillator = context.createOscillator();
+        const gain = context.createGain();
+
+        oscillator.type = "square";
+        oscillator.frequency.value = 880;
+
+        gain.gain.value = 0.1;
+
+        oscillator.connect(gain);
+        gain.connect(context.destination);
+
+        const now = context.currentTime;
+
+        gain.gain.setValueAtTime(.0001, now);
+        gain.gain.exponentialRampToValueAtTime(0.1, now + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.2);
+
+        oscillator.start(now);
+        oscillator.stop(now + 0.25);
+    }
+
+    // Function for starting the alarm.
+    function startAlarm() {
+        if (alarmIntervalRef.current !== null) {
+            return;
+        }
+
+        beep();
+        alarmIntervalRef.current = window.setInterval(beep, 1000);
+    }
+
+    // Function for stopping the alarm.
+    function stopAlarm() {
+        if (alarmIntervalRef.current !== null) {
+            window.clearInterval(alarmIntervalRef.current);
+            alarmIntervalRef.current = null;
+        }
+    }
+
+    useEffect(() => {
+        if (timerState.endAt !== null && isComplete) {
+            startAlarm();
+        } else {
+            stopAlarm();
+        }
+
+        return stopAlarm;
+    }, [timerState.endAt, isComplete]);
 
     const displayText =
         uiPhase === "ready"
@@ -217,6 +298,15 @@ export function Timer(_: TimerProps) {
                 >
                     End Timer and Start Break Now
                 </button>
+
+                {uiPhase === "selection" && (
+                    <button
+                        className="rounded-lg border px-4 py-2"
+                        onClick={stopAlarm}
+                    >
+                        Silence Alarm
+                    </button>
+                )}
             </div>
 
             {uiPhase === "selection" && (
