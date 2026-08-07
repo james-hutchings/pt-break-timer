@@ -1,4 +1,4 @@
-PT Break Timer
+Hello! Thank you for viewing my repository. 
 
 PT Break Timer is a small web application that reminds users to take regular physical therapy (PT) breaks throughout the day. Instead of showing the same exercises over and over, it keeps track of what has already been completed and suggests exercises that haven't been done recently.
 
@@ -22,7 +22,7 @@ You'll need Node.js installed on your computer.
 
 Clone the repository:
 
-git clone https://github.com/<your-username>/pt-break-timer.git
+git clone https://github.com/james-hutchings/pt-break-timer.git
 cd pt-break-timer
 
 Install the project:
@@ -57,15 +57,14 @@ data/
 hooks/
 lib/
 tests/
-Future Plans
 
 Some ideas for future versions include:
 
-Exercise statistics
-Exercise history dashboard
-Embedded exercise videos
-Custom timer presets
-Cloud synchronization
+Exercise statistics,
+Exercise history dashboard,
+Embedded exercise videos,
+Custom timer presets,
+Cloud synchronization,
 User accounts
 
 Created by James Hutchings as both a learning project and a practical tool for managing physical therapy breaks
