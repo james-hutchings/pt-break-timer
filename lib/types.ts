@@ -1,7 +1,7 @@
 /*
 types.ts
 This file contains the type definitions for the application. 
-Written by James Hutchings, 2024-06-01
+Written by James Hutchings, 2026-08-06
 */
 
 export type ExerciseMode = "timer" | "reps" | "hold";

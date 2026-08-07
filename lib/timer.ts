@@ -2,7 +2,7 @@
 * pt-break-timer
 * timer.ts
 * This file contains the timer logic for the application. 
-* Written by James Hutchings and ChatGPT, 2024-06-19
+* Written by James Hutchings, 2026-08-06
 */
 
 import { TimerState } from "./types";

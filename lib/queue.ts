@@ -1,6 +1,6 @@
 /*
 Queue management for exercises. This module provides functions to determine the next exercise to perform based on the last time each exercise was done and the specified break time between exercises.
-Written by James Hutchings, 2024-06-01
+Written by James Hutchings, 2026-08-06
 */
 
 import { Exercise, ExerciseState } from "./types";

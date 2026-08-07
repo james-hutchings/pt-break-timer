@@ -1,6 +1,6 @@
 /*
 Tests for the queue module, which contains the logic for managing the exercise queue and state.
-Written by James Hutchings and ChatGPT, 2024-06-16
+Written by James Hutchings, 2026-08-06
 */
 
 import { describe, expect, it } from "vitest";
@@ -22,6 +22,7 @@ const exercises: Exercise[] = [
     instructions: "a",
     durationSeconds: 1,
     active: true,
+    mode: "timer",
   },
   {
     id: "b",
@@ -32,6 +33,7 @@ const exercises: Exercise[] = [
     instructions: "b",
     durationSeconds: 2,
     active: true,
+    mode: "timer",
   },
   {
     id: "c",
@@ -42,6 +44,7 @@ const exercises: Exercise[] = [
     instructions: "c",
     durationSeconds: 3,
     active: true,
+    mode: "timer",
   },
   {
     id: "d",
@@ -52,6 +55,7 @@ const exercises: Exercise[] = [
     instructions: "d",
     durationSeconds: 4,
     active: true,
+    mode: "timer",
   },
   {
     id: "e",
@@ -62,6 +66,7 @@ const exercises: Exercise[] = [
     instructions: "e",
     durationSeconds: 5,
     active: true,
+    mode: "timer",
   },
   {
     id: "f",
@@ -72,6 +77,7 @@ const exercises: Exercise[] = [
     instructions: "f",
     durationSeconds: 6,
     active: true,
+    mode: "timer",
   },
   {
     id: "g",
@@ -82,6 +88,7 @@ const exercises: Exercise[] = [
     instructions: "g",
     durationSeconds: 7,
     active: true,
+    mode: "timer",
   },
   {
     id: "h",
@@ -92,6 +99,7 @@ const exercises: Exercise[] = [
     instructions: "h",
     durationSeconds: 8,
     active: true,
+    mode: "timer",
   },
   {
     id: "i",
@@ -102,6 +110,7 @@ const exercises: Exercise[] = [
     instructions: "i",
     durationSeconds: 9,
     active: true,
+    mode: "timer",
   },
   {
     id: "j",
@@ -112,6 +121,7 @@ const exercises: Exercise[] = [
     instructions: "j",
     durationSeconds: 10,
     active: true,
+    mode: "timer",
   },
 ];
 

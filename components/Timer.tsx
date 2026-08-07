@@ -1,6 +1,6 @@
 /*
  * This file contains a React component called Timer, which displays a countdown timer and provides controls to start and reset the timer.
- * Written by James Hutchings and ChatGPT, 2024-06-19
+ * Written by James Hutchings, 2026-08-06
  */
 
 "use client";

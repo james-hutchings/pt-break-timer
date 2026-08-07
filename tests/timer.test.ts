@@ -1,6 +1,6 @@
 /*
   * This file contains unit tests for the timer functions defined in timer.ts.
-  * Written by James Hutchings and ChatGPT, 2024-06-19
+  * Written by James Hutchings, 2026-08-06
 */
 
 import { describe, it, expect } from "vitest";

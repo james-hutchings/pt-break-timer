@@ -1,6 +1,6 @@
 /*
  * Component that displays a list of exercises.
- * Written by James Hutchings and ChatGPT. 6/22/2026
+ * Written by James Hutchings, 2026-08-06
  */
 
 import type { Exercise } from "@/lib/types";

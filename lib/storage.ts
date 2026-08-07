@@ -1,6 +1,6 @@
 /*
     * Storage module for persisting timer settings, timer state, and exercise states in localStorage.
-    * Written by James Hutchings and ChatGPT, 2024-06-19
+    * Written by James Hutchings, 2026-08-06
 */
 
 import { ExerciseState, TimerSettings, TimerState } from "./types";

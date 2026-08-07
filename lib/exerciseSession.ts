@@ -1,6 +1,6 @@
 /*
 Type ExerciseSession, represents an individual session post timer expiration and moves through given exercises.
-Written by James Hutchings and ChatGPT, 06/22/2026
+Written by James Hutchings, 2026-08-06
 */
 
 import type { ExerciseSession } from "./types";

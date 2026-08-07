@@ -1,6 +1,6 @@
 /*
   * This file contains a custom React hook called useTimer, which manages the state and behavior of a timer.
-  * Written by James Hutchings and ChatGPT, 2024-06-19
+  * Written by James Hutchings, 2026-08-06
  */
 
 import { useEffect, useState } from "react";
