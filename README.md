@@ -24,6 +24,10 @@ This project started as a way to learn modern web development while building som
 
 **Getting Started:**
 
+- If you would simply like to utilize the deployed live demo web-application, click [Here: ](https://pt-break-timer.vercel.app/)
+
+- Otherwise, see below for installation instructions.
+
 - You'll need Node.js installed on your computer.
 
 **Clone the repository:**
