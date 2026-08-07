@@ -2,7 +2,7 @@
 
 PT Break Timer is a small web application that reminds users to take regular physical therapy (PT) breaks throughout the day. Instead of showing the same exercises over and over, it keeps track of what has already been completed and suggests exercises that haven't been done recently.
 
-This project started as a way to learn modern web development while building something useful for family.
+This project started as a way to learn modern web development while building something useful for family members who wanted regular reminders to take breaks and cycle through physical therapy exercises.
 
 **Features:**
 
