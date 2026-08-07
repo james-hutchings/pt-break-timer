@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+PT Break Timer
 
-## Getting Started
+PT Break Timer is a small web application that reminds users to take regular physical therapy (PT) breaks throughout the day. Instead of showing the same exercises over and over, it keeps track of what has already been completed and suggests exercises that haven't been done recently.
 
-First, run the development server:
+This project started as a way to learn modern web development while building something useful for family.
 
-```bash
+Features
+Work and break timer with selectable presets
+Smart exercise rotation based on completion history
+Guided exercise sessions
+Optional exercise demonstration videos
+Exercise history saved automatically in your browser
+Built With
+Next.js
+React
+TypeScript
+Tailwind CSS
+Vitest
+Getting Started
+
+You'll need Node.js installed on your computer.
+
+Clone the repository:
+
+git clone https://github.com/<your-username>/pt-break-timer.git
+cd pt-break-timer
+
+Install the project:
+
+npm install
+
+Start the application:
+
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open your browser to:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+http://localhost:3000
+Updating
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+If you've already cloned the project, updating is simple:
 
-## Learn More
+git pull
+npm install
+npm run dev
 
-To learn more about Next.js, take a look at the following resources:
+npm install is only necessary if new packages have been added since your last update.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Saving Progress
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The application stores timer settings and exercise history locally in your browser using localStorage. Nothing is uploaded or stored online.
 
-## Deploy on Vercel
+Project Structure
+app/
+components/
+data/
+hooks/
+lib/
+tests/
+Future Plans
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Some ideas for future versions include:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Exercise statistics
+Exercise history dashboard
+Embedded exercise videos
+Custom timer presets
+Cloud synchronization
+User accounts
+
+Created by James Hutchings as both a learning project and a practical tool for managing physical therapy breaks
