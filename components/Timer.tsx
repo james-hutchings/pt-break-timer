@@ -101,6 +101,18 @@ export function Timer(_: TimerProps) {
     // function for starting break.
     function handleStartBreak() {
         stopAlarm();
+
+        // Ensure AudioContext is created and resumed if necessary
+        // This is important for browsers that require user interaction to start audio playback, such as safari.
+
+        if (!audioContextRef.current) {
+            audioContextRef.current = new AudioContext();
+        }
+
+        if (audioContextRef.current.state === "suspended") {
+            void audioContextRef.current.resume();
+        }
+
         setSelectedExerciseIds([]);
         setSession(null);
         start(selectedPreset.intervalMinutes);
