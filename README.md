@@ -1,36 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+**Hello! Thank you for viewing my repository.** 
 
-## Getting Started
+PT Break Timer is a small web application that reminds users to take regular physical therapy (PT) breaks throughout the day. Instead of showing the same exercises over and over, it keeps track of what has already been completed and suggests exercises that haven't been done recently.
 
-First, run the development server:
+This project started as a way to learn modern web development while building something useful for family members who wanted regular reminders to take breaks and cycle through physical therapy exercises.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+**Features:**
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Work and break timer with selectable presets
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Smart exercise rotation based on completion history
 
-## Learn More
+- Guided exercise sessions
 
-To learn more about Next.js, take a look at the following resources:
+- Optional exercise demonstration videos
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Exercise history saved automatically in your browser
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Built With:**
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Next.js, React, TypeScript, Tailwind CSS, and Vitest.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Getting Started:**
+
+- If you would simply like to utilize the deployed live demo web-application, click [Here: ](https://pt-break-timer.vercel.app/)
+
+- Otherwise, see below for installation instructions.
+
+- You'll need Node.js installed on your computer.
+
+**Clone the repository:**
+
+- git clone https://github.com/james-hutchings/pt-break-timer.git
+
+**Install and running the project:**
+
+- npm install
+
+- npm run dev
+
+**Then open your browser to:**
+
+- http://localhost:3000
+
+
+**Updating:**
+
+If you've already cloned the project, updating is simple:
+
+- git pull
+- npm install
+- npm run dev
+
+(npm install is only necessary if new packages have been added since your last update.)
+
+**Saving Progress:**
+
+The application stores timer settings and exercise history locally in your browser using localStorage. Nothing is uploaded or stored online.
+
+**Project Structure:**
+
+- app/
+- components/
+- data/
+- hooks/
+- lib/
+- tests/
+
+**Some ideas for future versions include:**
+
+
+- Exercise statistics
+
+- Exercise history dashboard
+
+- Embedded exercise videos
+
+- Custom timer presets
+
+- Cloud synchronization
+
+- User accounts
+
+
+**Created by James Hutchings as both a learning project and a practical tool for managing physical therapy breaks**
